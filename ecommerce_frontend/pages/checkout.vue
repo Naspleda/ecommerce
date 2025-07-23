@@ -15,12 +15,10 @@
 <script setup>
 import { useCartStore } from '~/stores/cart';
 import { useAuthStore } from '~/stores/auth';
-import { useNuxtApp } from '#app';
 import { useRouter } from 'vue-router';
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
-const { $axios } = useNuxtApp();
 const router = useRouter();
 
 const proceedToPayment = async () => {
@@ -32,17 +30,20 @@ const proceedToPayment = async () => {
 
   // 1. Crear la orden en el backend
   try {
-    const orderResponse = await $axios.post('orders/', {
-      items: cartStore.items.map(item => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        price: item.price // Asegúrate de que el precio sea el del momento del pedido
-      }))
+    const orderResponse = await $fetch('orders/', {
+      method: 'POST',
+      body: {
+        items: cartStore.items.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity,
+          price: item.price // Asegúrate de que el precio sea el del momento del pedido
+        }))
+      }
     });
     const orderId = orderResponse.data.id;
 
     // 2. Solicitar la preferencia de pago a Mercado Pago a través del backend
-    const paymentResponse = await $axios.post(`orders/${orderId}/process_payment/`);
+    const paymentResponse = await $fetch(`orders/${orderId}/process_payment/`);
     const initPoint = paymentResponse.data.init_point;
 
     if (initPoint) {
