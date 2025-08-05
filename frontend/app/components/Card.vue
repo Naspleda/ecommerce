@@ -1,5 +1,5 @@
 <template>
-  <div class="border p-4 rounded-lg">
+  <div class="border border-gray-900 p-4 rounded-lg">
     <img :src="product.image" :alt="product.name" class="w-full h-48 object-cover mb-4">
     <h2 class="text-lg font-bold">{{ product.name }}</h2>
     <p class="text-gray-600">{{ product.description }}</p>
