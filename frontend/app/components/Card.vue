@@ -1,44 +1,22 @@
 <template>
-  <div class="w-80 bg-gray-900 rounded-lg overflow-hidden shadow-lg">
-       <!-- Product Image Container  -->
-      <div class="relative">
-        <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-f4ZBE2kOmLqcukfd0kil2WRmptEesx.png"
-          alt="Blue T-Shirt"
-          width={320}
-          height={240}
-          class="w-full h-60 object-cover"
-        />
-        <!-- Sale Badge  -->
-        <div class="absolute top-3 left-3 bg-green-400 text-black text-xs font-semibold px-2 py-1 rounded">
-          Sale
-        </div>
-      </div>
-
-      <!-- Product Details  -->
-      <div class="p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-white font-medium text-lg mb-2">Blue T-Shirt</h3>
-            <p class="text-white text-xl font-bold">$29</p>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="flex gap-2">
-            <button class="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">
-              <!-- <Heart class="w-5 h-5 text-white" /> -->
-            </button>
-            <button class="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">
-              <!-- <ShoppingCart class="w-5 h-5 text-white" /> -->
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="border border-gray-900 p-4 rounded-lg">
+    <img :src="product.image" :alt="product.name" class="w-full h-48 object-cover mb-4">
+    <h2 class="text-lg font-bold">{{ product.name }}</h2>
+    <p class="text-gray-600">{{ product.description }}</p>
+    <p class="text-xl font-semibold mt-2">${{ product.price }}</p>
+    <NuxtLink :to="`/products/${product.id}`" class="bg-blue-500 text-white px-4 py-2 rounded mt-4 inline-block">View Details</NuxtLink>
+    <button @click="addToCart" class="bg-green-500 text-white px-4 py-2 rounded mt-4 ml-2 inline-block">Add to Cart</button>
+  </div>
 </template>
 
 <script setup>
-</script>
 
-<style scoped>
-</style>
+defineProps({
+  product: Object
+})
+
+function addToCart() {
+  // Logic to add to cart
+  console.log('Added to cart')
+}
+</script>
