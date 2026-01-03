@@ -2,5 +2,21 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss']
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/google-fonts'],
+  googleFonts: {
+    families: {
+      Inter: [300, 400, 500, 600, 700, 800],
+    },
+    display: 'swap',
+  },
+  app: {
+    head: {
+      title: 'E-Commerce Store',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Tu tienda online de productos exclusivos' },
+      ],
+    },
+  },
 })
