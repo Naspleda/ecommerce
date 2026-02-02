@@ -1,114 +1,145 @@
 <template>
   <div class="home-page">
-    <!-- Hero Section -->
-    <section class="hero relative -mt-8 -mx-4 px-4 py-20 md:py-32 overflow-hidden">
-      <!-- Background Gradient -->
+    <!-- Hero Banner -->
+    <section class="hero-banner relative -mt-8 -mx-4 px-4 py-12 md:py-16 overflow-hidden mb-8">
+      <!-- Background -->
       <div class="absolute inset-0 bg-gradient-to-br from-dark via-dark-600 to-dark-800"></div>
       <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent"></div>
       
       <!-- Content -->
       <div class="relative z-10 max-w-4xl mx-auto text-center">
-        <span class="inline-block px-4 py-1 bg-primary/10 border border-primary/30 rounded-full text-primary text-sm font-medium mb-6">
-          ✨ Nueva Colección Disponible
+        <span class="inline-block px-4 py-1 bg-primary/10 border border-primary/30 rounded-full text-primary text-sm font-medium mb-4">
+          🖨️ Modelos Listos para Imprimir
         </span>
         
-        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-          Descubre Productos
+        <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+          Modelos 3D
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-300">
-            Exclusivos
+            Premium
           </span>
         </h1>
         
-        <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-          Explora nuestra selección de productos premium. Calidad excepcional, 
-          diseño innovador y los mejores precios del mercado.
+        <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+          Explora nuestra colección de modelos 3D listos para impresión. 
+          Figuras, props, miniaturas y más.
         </p>
-        
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <NuxtLink 
-            to="/products" 
-            class="w-full sm:w-auto bg-gradient-to-r from-primary to-primary-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 shadow-glow hover:shadow-glow-lg flex items-center justify-center gap-2"
+      </div>
+
+      <!-- Decorative -->
+      <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-dark to-transparent"></div>
+    </section>
+
+    <!-- Main Content with Sidebar -->
+    <div class="flex gap-6">
+      <!-- Sidebar -->
+      <div class="hidden lg:block w-80 flex-shrink-0">
+        <Sidebar 
+          v-model="selectedCategory" 
+          @category-change="handleCategoryChange" 
+        />
+      </div>
+
+      <!-- Products Section -->
+      <div class="flex-1 min-w-0">
+        <!-- Active Category Badge -->
+        <div v-if="selectedCategory" class="mb-4 flex items-center gap-2">
+          <span class="text-gray-400 text-sm">Filtrando por:</span>
+          <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+            {{ getCategoryName(selectedCategory) }}
+            <button @click="clearCategory" class="hover:text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </span>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="bg-dark-500/50 border border-dark-300/20 rounded-xl p-4 mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="text-gray-400 text-sm">Ordenar por:</span>
+            <select 
+              v-model="sortBy"
+              class="bg-dark-600 border border-dark-300/30 text-white rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary"
+            >
+              <option value="featured">Destacados</option>
+              <option value="price-low">Precio: Menor a Mayor</option>
+              <option value="price-high">Precio: Mayor a Menor</option>
+              <option value="name">Nombre A-Z</option>
+            </select>
+          </div>
+          <span class="text-gray-400 text-sm">{{ productCount }} modelos encontrados</span>
+        </div>
+
+        <!-- Mobile Category Selector -->
+        <div class="lg:hidden mb-6">
+          <select 
+            v-model="selectedCategory"
+            @change="handleCategoryChange(selectedCategory)"
+            class="w-full bg-dark-600 border border-dark-300/30 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"
           >
-            Explorar Productos
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </NuxtLink>
-          <NuxtLink 
-            to="/products" 
-            class="w-full sm:w-auto border border-white/20 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 flex items-center justify-center gap-2"
-          >
-            Ver Ofertas
-          </NuxtLink>
+            <option :value="null">Todas las categorías</option>
+            <option v-for="cat in categoryOptions" :key="cat.id" :value="cat.id">
+              {{ cat.icon }} {{ cat.name }}
+            </option>
+          </select>
         </div>
+
+        <!-- Products Grid -->
+        <ProductGrid :category="selectedCategory" @product-count="updateProductCount" />
       </div>
-
-      <!-- Decorative Elements -->
-      <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-dark to-transparent"></div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="py-16">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="feature-card bg-dark-500/50 border border-dark-300/20 rounded-xl p-6 text-center hover:border-primary/30">
-          <div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-            </svg>
-          </div>
-          <h3 class="text-white font-semibold mb-2">Envío Gratis</h3>
-          <p class="text-gray-400 text-sm">En compras mayores a $50</p>
-        </div>
-
-        <div class="feature-card bg-dark-500/50 border border-dark-300/20 rounded-xl p-6 text-center hover:border-primary/30">
-          <div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </div>
-          <h3 class="text-white font-semibold mb-2">Garantía 100%</h3>
-          <p class="text-gray-400 text-sm">30 días de devolución</p>
-        </div>
-
-        <div class="feature-card bg-dark-500/50 border border-dark-300/20 rounded-xl p-6 text-center hover:border-primary/30">
-          <div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          </div>
-          <h3 class="text-white font-semibold mb-2">Soporte 24/7</h3>
-          <p class="text-gray-400 text-sm">Ayuda cuando lo necesites</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Featured Products -->
-    <section class="py-8">
-      <ProductGrid title="Productos Destacados" :show-view-all="true" :limit="4" />
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-16">
-      <div class="bg-gradient-to-r from-primary/10 to-primary-700/10 border border-primary/20 rounded-2xl p-8 md:p-12 text-center">
-        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
-          ¿Listo para descubrir más?
-        </h2>
-        <p class="text-gray-400 mb-6 max-w-xl mx-auto">
-          Únete a miles de clientes satisfechos y encuentra el producto perfecto para ti.
-        </p>
-        <NuxtLink 
-          to="/products" 
-          class="inline-flex items-center gap-2 bg-primary text-white px-8 py-3 rounded-xl font-semibold hover:bg-primary-600"
-        >
-          Ver Catálogo Completo
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </NuxtLink>
-      </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+const sortBy = ref('featured')
+const selectedCategory = ref(null)
+const productCount = ref(0)
+
+const categoryOptions = [
+  { id: 'anime', name: 'Anime & Manga', icon: '🎭' },
+  { id: 'gaming', name: 'Videojuegos', icon: '🎮' },
+  { id: 'movies', name: 'Películas & Series', icon: '🎬' },
+  { id: 'comics', name: 'Cómics & Superhéroes', icon: '💥' },
+  { id: 'fantasy', name: 'Fantasía & Medieval', icon: '⚔️' },
+  { id: 'miniatures', name: 'Miniaturas Wargame', icon: '♟️' },
+  { id: 'terrain', name: 'Terrenos & Escenografía', icon: '🏰' },
+  { id: 'dnd', name: 'D&D & RPG', icon: '🐉' },
+  { id: 'gadgets', name: 'Gadgets & Herramientas', icon: '🔧' },
+  { id: 'organizers', name: 'Organizadores', icon: '📦' },
+  { id: 'phone', name: 'Accesorios Tech', icon: '📱' },
+  { id: 'home', name: 'Decoración Hogar', icon: '🏠' },
+  { id: 'art', name: 'Arte & Esculturas', icon: '🗿' },
+  { id: 'plants', name: 'Macetas & Jardinería', icon: '🌿' },
+  { id: 'vehicles', name: 'Vehículos & Autos', icon: '🚗' },
+  { id: 'aircraft', name: 'Aviones & Naves', icon: '✈️' },
+  { id: 'robots', name: 'Robots & Mechas', icon: '🤖' },
+  { id: 'anatomy', name: 'Anatomía & Medicina', icon: '🫀' },
+  { id: 'architecture', name: 'Arquitectura', icon: '🏛️' },
+  { id: 'science', name: 'Ciencia & Educación', icon: '🔬' },
+  { id: 'cosplay', name: 'Cosplay & Props', icon: '🎪' },
+  { id: 'jewelry', name: 'Joyería & Accesorios', icon: '💍' },
+  { id: 'animals', name: 'Animales & Mascotas', icon: '🐾' },
+  { id: 'holiday', name: 'Temporadas & Fiestas', icon: '🎄' }
+]
+
+function handleCategoryChange(categoryId) {
+  selectedCategory.value = categoryId
+}
+
+function clearCategory() {
+  selectedCategory.value = null
+}
+
+function getCategoryName(categoryId) {
+  const cat = categoryOptions.find(c => c.id === categoryId)
+  return cat ? `${cat.icon} ${cat.name}` : ''
+}
+
+function updateProductCount(count) {
+  productCount.value = count
+}
 </script>
