@@ -140,6 +140,26 @@
         </div>
       </div>
     </div>
+
+    <!-- Comments Section -->
+    <section class="comments-section mt-12">
+      <h2 class="text-2xl font-bold text-white mb-4">Comentarios</h2>
+
+      <!-- Display Comments -->
+      <div v-if="comments.length" class="space-y-4">
+        <div v-for="(comment, index) in comments" :key="index" class="bg-dark-500 p-4 rounded-lg">
+          <p class="text-gray-300">{{ comment.text }}</p>
+          <span class="text-sm text-gray-500">- {{ comment.author }}</span>
+        </div>
+      </div>
+      <p v-else class="text-gray-400">No hay comentarios aún. ¡Sé el primero en comentar!</p>
+
+      <!-- Add Comment Form -->
+      <form @submit.prevent="addComment" class="mt-6">
+        <textarea v-model="newComment" class="w-full p-3 bg-dark-500 text-white rounded-lg" rows="4" placeholder="Escribe tu comentario..."></textarea>
+        <button type="submit" class="mt-4 px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/80">Enviar</button>
+      </form>
+    </section>
   </div>
 </template>
 
@@ -170,4 +190,7 @@ const thumbnails = [
 function addToCart() {
   console.log(`Added ${quantity.value} items to cart`)
 }
+
+const comments = ref([])
+const newComment = ref("")
 </script>
