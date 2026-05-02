@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.supabase import supabase
+import stripe
 
 app = FastAPI()
 
@@ -17,16 +18,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Stripe API Key (Test Key)
+stripe.api_key = "sk_test_51H...your_secret_key_here"
+
 @app.get("/")
 def read_root():
     return {"message": "Hello from FastAPI + Supabase"}
 
-@app.get("/test-supabase")
-def test_supabase():
+@app.post("/create-checkout-session")
+def create_checkout_session():
     try:
-        # Simple test query - assumes you might have a 'users' or similar public table, 
-        # or just checking the client triggers no immediate error.
-        # For now, just returning connection info confirmation (not safe to return key)
-        return {"status": "success", "url": supabase.supabase_url}
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "usd",
+                        "product_data": {
+                            "name": "Example Product",
+                        },
+                        "unit_amount": 2000,
+                    },
+                    "quantity": 1,
+                },
+            ],
+            mode="payment",
+            success_url="http://localhost:3000/success",
+            cancel_url="http://localhost:3000/cancel",
+        )
+        return {"sessionId": session.id}
     except Exception as e:
-        return {"status": "error", "detail": str(e)}
+        return {"error": str(e)}
