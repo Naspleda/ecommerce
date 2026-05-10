@@ -126,6 +126,13 @@
             Proceder al Pago
           </button>
 
+          <!-- Stripe Checkout Button -->
+          <div class="mt-8">
+            <button @click="redirectToCheckout" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-600">
+              Proceder al Pago
+            </button>
+          </div>
+
           <!-- Security Badge -->
           <div class="flex items-center justify-center gap-2 mt-4 text-gray-500 text-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -140,7 +147,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
+import { loadStripe } from "@stripe/stripe-js";
 
 const cartItems = ref([
   {
@@ -159,25 +167,53 @@ const cartItems = ref([
     quantity: 2,
     image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop'
   }
-])
+]);
 
-const totalItems = computed(() => cartItems.value.reduce((sum, item) => sum + item.quantity, 0))
-const subtotal = computed(() => cartItems.value.reduce((sum, item) => sum + (item.price * item.quantity), 0))
-const taxes = computed(() => subtotal.value * 0.1)
-const total = computed(() => subtotal.value + taxes.value)
+const totalItems = computed(() => cartItems.value.reduce((sum, item) => sum + item.quantity, 0));
+const subtotal = computed(() => cartItems.value.reduce((sum, item) => sum + (item.price * item.quantity), 0));
+const taxes = computed(() => subtotal.value * 0.1);
+const total = computed(() => subtotal.value + taxes.value);
 
 function updateQuantity(id, newQuantity) {
   if (newQuantity < 1) {
-    removeItem(id)
-    return
+    removeItem(id);
+    return;
   }
-  const item = cartItems.value.find(i => i.id === id)
+  const item = cartItems.value.find(i => i.id === id);
   if (item) {
-    item.quantity = newQuantity
+    item.quantity = newQuantity;
   }
 }
 
 function removeItem(id) {
-  cartItems.value = cartItems.value.filter(i => i.id !== id)
+  cartItems.value = cartItems.value.filter(i => i.id !== id);
 }
+
+async function redirectToCheckout() {
+  try {
+    // Simulación del comportamiento de Stripe
+    console.log("Simulando redirección a Stripe...");
+    alert("Redirigiendo a Stripe (simulado).");
+    // Aquí podrías redirigir a una página de prueba o mostrar un mensaje
+  } catch (error) {
+    console.error("Error en la simulación de Stripe:", error);
+  }
+}
+</script>
+
+<script>
+export default {
+  methods: {
+    async redirectToCheckout() {
+      try {
+        // Simulación del comportamiento de Stripe
+        console.log("Simulando redirección a Stripe...");
+        alert("Redirigiendo a Stripe (simulado).");
+        // Aquí podrías redirigir a una página de prueba o mostrar un mensaje
+      } catch (error) {
+        console.error("Error en la simulación de Stripe:", error);
+      }
+    },
+  },
+};
 </script>

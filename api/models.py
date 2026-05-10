@@ -1,5 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User # Si vas a extender el User de Django
+
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    REQUIRED_FIELDS = ['email']
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
